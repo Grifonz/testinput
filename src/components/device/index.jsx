@@ -10,17 +10,16 @@ const ContainerWrap = styled.div`
 `;
 
 const MobileWrap = styled.div`
-    background-color: #68d368;
-    opacity: 0.8;
+    background-color:rgb(66, 61, 61);
 `;
 
 const LaptopWrap = styled.div`
-    background-color: #fdd44c;
+    background-color:rgb(66, 61, 61);
     opacity: 0.9;
 `;
 
 const DesktopWrap = styled.div`
-    background-color: #4fd3ab;
+    background-color:rgb(66, 61, 61);
     opacity: 0.8;
 `;
 
@@ -43,8 +42,7 @@ const DeviceHeader = ({ children }) => {
         <ContainerWrap>
             {(() => {
                 switch (device) {
-                    case 'mobile': 
-                        return  <MobileWrap> {children} </MobileWrap>;
+                    case 'mobile': return  <MobileWrap> {children} </MobileWrap>;
                     case 'tablet': return <LaptopWrap>{children}</LaptopWrap>;
                         default: return <DesktopWrap>{children}</DesktopWrap>;
                 }
