@@ -1,103 +1,214 @@
 import React, { useState } from 'react'
 import DeviceWrapper from '../../components/device/index'
 import styled from 'styled-components'
-//import { Col, Form, Button } from 'react-bootstrap';
 
 const MyBox = styled.div`
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
     width: 30em;
     height: 30em;
 `;
 
-const MyForm = styled.form`
+const MyHeader = styled.form`
     display: flex;
-    width: 100%;
-    height: 100%;
+    justify-content: space-between;
+    height: 30%;
 `;
 
-const MyLabel = styled.label`
-    margin: auto 10px auto auto;
+const MyBody = styled.form`
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+`;
+
+const BodyAction = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+const BodyDetails = styled.div.attrs(props => ({
+    overflow: props.items > 3 ? 'scroll' : 'hidden'
+}))`
+    margin: auto 0.1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 5em;
+    color: white;
+    font-size: 2em;
+    overflow-y: ${props => props.overflow};
 `;
 
 const MyInput = styled.input`
     margin: auto;
-    padding-left: 10px;
-    border-radius: 10px;
+    padding-left: 1em;
+    border-radius: 1em;
     border: 1px solid lightgray;
     outline: none;
 `;
 
 const MySelector = styled.select`
     margin: auto;
-    border-radius: 5px;
+    border-radius: 0.5em;
     border: 1px solid lightgray;
     outline: none;
     background-color: lightblue;
-    width: 100px;
+    width: 10em;
    
 `;
 
 const MyOptions = styled.option`
-    text-align: center;
+    //add here style
 `;
 
-const MyOutput = styled.div`
-    margin: 0 auto 50px auto;
-    background-color: white;
-    text-align: center;
-    border: 1px solid lightgrey;
-    border-radius: 10px;
-    height: 3em;
-    width: 80%;
+const MyAddButton = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: rgb(67, 196, 89);
+    border-radius: 1em;
+    width: 3.5em;
+    height: 2.5;
+    margin: auto;
+    color: rgb(66, 61, 61);
+
+    &:hover,:focus{
+        opacity:0.6;
+        color: white;
+    }
+
+    &:active{
+        opacity: 0.9;
+    }
+`;
+
+const MyOrderButton = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: rgb(67, 196, 89);
+    border-radius: 1em;
+    width: 3.5em;
+    height: 2.5em;
+    margin: auto;
+    color: rgb(66, 61, 61);
+
+    &:hover,:focus{
+        opacity:0.6;
+        color: white;
+    }
+
+    &:active{
+        opacity: 0.9;
+    }
+`;
+
+const MyClearButton = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: rgb(67, 196, 89);
+    border-radius: 1em;
+    width: 3.5em;
+    height: 2.5em;
+    margin: auto;
+    color: rgb(66, 61, 61);
+
+    &:hover,:focus{
+        opacity:0.6;
+        color: white;
+    }
+
+    &:active{
+        opacity: 0.9;
+    }
 `;
 
 
 const MyComponent = () => {
 
-    const [toggle, setToggle] = useState({ valueIn: '', order: '', finalValue: '' });
+    //hook which saves all entries by user
+    const [ entries, setEntries ] = useState([]);
 
-    //GET INPUT VALUE INSERTED BY USER
+    //hook which save all input typed into the input field and the option selected by user
+    const [ toggle, setToggle ] = useState({ value: '', order: '', entriesSorted: [] });
+
+    //handle input field
     const handleInput = e => {
-        setToggle({ valueIn: e.target.value, order: '' });
+        setToggle({ value: e.target.value }); //save entry and reset order selection
     }
 
-    //GET THE ORDERING FROM DROPDOWN
+    //handle dropdown
     const handleSelect = e => {
-        let newValueIn = toggle.valueIn.replace(/[^\w\s]/gi, '');
-        switch(e.target.value){
-            case 'asc':
-                newValueIn = newValueIn.split('').sort((a, b) => a.localeCompare(b)).join(''); 
-                break;
-            case 'desc':
-                newValueIn = newValueIn.split('').sort((a, b) => b.localeCompare(a)).join(''); 
-                break;
-            case '':
-                newValueIn = ''
-                break;
-                default: break;
-        }
-        setToggle({ valueIn: newValueIn, order: e.target.value, finalValue: newValueIn });
+         setToggle({ order: e.target.value }); 
     };
 
+    //handle add button, which adds all entries into the hook array
+    //removes all special char typed by user 
+    //reset input field and dropdown selection
+    const handleAdd = () => {
+        if(toggle.value !== '' && toggle.value !== undefined){
+            let listIn = entries;
+            let entryNoSpecialChar = toggle.value.replace(/[^\w\s]/gi, '');
+            listIn.push(entryNoSpecialChar);
+            setEntries(listIn);
+            setToggle({ value: '', order: '' });
+        }
+    }
+
+    //handle ordering button, which sorts the entries according to the option selected by user
+    const handleOrder = () => {
+        let newList = [];
+        switch(toggle.order){
+            case 'asc': newList = entries.sort((a, b) => a.localeCompare(b)); break;
+            case 'desc': newList = entries.sort((a, b) => b.localeCompare(a)); break;
+                default: break;
+        }
+        setToggle({ entriesSorted: newList }); 
+    }
+
+    //handle clear button
+    const handleClear = () => {
+        setEntries([]); 
+    }
+
+    //Device Wrapper is a styling wrapper according to 3 breakpoints (Mobile, Tablet, Laptop)
     return(
         <DeviceWrapper>
             <MyBox>
-                <MyForm>
-                    <MyLabel>Casual Input:</MyLabel>
-                    <MyInput type="text" onChange={handleInput} />
+                <MyHeader>
+                    <MyInput 
+                        type="text" 
+                        value={toggle.value} 
+                        placeholder="insert here.."
+                        onChange={handleInput} />
+                    <MyAddButton onClick={handleAdd}>Add</MyAddButton>
                     <MySelector 
                         value={toggle.order}
                         onChange={handleSelect}>
-                            <MyOptions value="">Select</MyOptions>
+                            <MyOptions value="sel">All</MyOptions>
                             <MyOptions value="asc">Ascending</MyOptions>
                             <MyOptions value="desc">Descending</MyOptions>
                     </MySelector>
-                </MyForm>
+                </MyHeader>
+                <MyBody>
+                    {entries.length > 1 && (
+                        <BodyAction>
+                            <MyOrderButton onClick={handleOrder}>Order</MyOrderButton>
+                            <MyClearButton onClick={handleClear}>Clear</MyClearButton>
+                        </BodyAction>
+                    )}
+                    <BodyDetails items={entries.length}>
+                        {entries.map((entry,index)=>(
+                            <div key={index}>{entry}</div>
+                        ))}
+                    </BodyDetails>
+                </MyBody>
             </MyBox>
-            <MyOutput>{toggle.finalValue}</MyOutput>
         </DeviceWrapper>
     );
 }
